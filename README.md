@@ -1,7 +1,3 @@
-##Writeup Template
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
 
 **Vehicle Detection Project**
 
@@ -33,7 +29,7 @@ The code for this step is contained in lines 104 through 132 of the file called 
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  
 
-I then explored different color spaces such as RGB, LUV, and YCrCb; as well as different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed first images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like. Since the figures are pretty small, the range of the parameters is quite narrow. I did not see much of the difference between orient = 6 or 9, same for cells_per_block = 2 or 4. I did see much difference between the three color spaces that I tried.
+I then explored different color spaces such as RGB, LUV, and YCrCb; as well as different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed first images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like. Since the figures are pretty small, the range of the parameters is quite narrow. I did not see much of the difference between orient = 6 or 9, same for cells_per_block = 2 or 4. I did not see much difference between the three color spaces that I tried either.
 
 Here is an example using the `YCrCb`,'RGB', and 'LUV' color space and HOG parameters of `orient=6` or `orient=9`, and `cells_per_block=2` or `cells_per_block=4`, not sure whether you can find some difference:
 
@@ -48,13 +44,13 @@ Just looking at the pictures, it is hard to make a decision. I selected the colo
 
 ####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM and SVM with a rbf kernel using sklearn.model_selection.cross_val_score. SVM with kernel was too slow, so I picked linear SVM. I then compared linear SVM and decision tree. Under the same condition, decision tree was slower and lower score. so the winner is linear SVM. I also tried LUV and YCrCb color space. They had similar performance when hog_channel is 0, but LUV would throw traceback error when hog_channel is 'ALL' because it has negative pixel values. I tried different HOG parameters, and found out orient=9, pix_per_cell = 8, and cell_per_block = 2 could have the highest score at 0.9909, while the 'Feature vector length' = 8460. The code for this step is contained in lines 134 through 249 of the file called `search_classifier.py`. After classifier was trained, I saved the model by pickle module. 
+I trained a linear SVM and SVM with a rbf kernel using sklearn.model_selection.cross_val_score. SVM with kernel was too slow, so I picked linear SVM. I then compared linear SVM and decision tree. Under the same condition, decision tree was slower and had lower score. so the winner is linear SVM. I also tried LUV and YCrCb color space. They had similar performance when hog_channel is 0, but LUV would throw traceback error when hog_channel is 'ALL' because it has negative pixel values. I tried different HOG parameters, and found out orient=9, pix_per_cell = 8, and cell_per_block = 2 could have the highest score at 0.9909, while the 'Feature vector length' = 8460. The code for this step is contained in lines 134 through 249 of the file called `search_classifier.py`. After classifier was trained, I saved the model by pickle module. 
 
 ###Sliding Window Search
 
 ####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search from 400 to 656 on y axis and full range on x axis. In 'findCar.py', I setup different scales. For each scale, I extracted the feature once then applied sliding window process. This strategy is more efficient and saved me a lot of time. Since cars at longer distence would be smaller while cars that are closer would be bigger. I further narrowed the search area according to the scale size. I finaly settled on the choice showed in lines 175 through 195 in file 'findCar.py'.    
+I decided to search from 400 to 656 on y axis and full range on x axis. In 'findCar.py', I setup different scales. For each scale, I extracted the feature once then applied sliding window process. This strategy was more efficient and saved me a lot of time. Since cars that are more far away would be smaller while cars that are closer would be bigger. I further narrowed the search area according to the scale size. I finaly settled on the choice showed in lines 175 through 195 in file 'findCar.py'.    
 
 
 
